@@ -2,15 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import (
+from marionette_driver import (
     By, Wait
 )
 
-from marionette.errors import NoSuchElementException
+from marionette_driver.errors import NoSuchElementException
 
 import firefox_puppeteer.errors as errors
 
 from .. import DOMElement
+from ..api.security import Security
 from ..base import UIBaseLib
 
 
@@ -34,7 +35,7 @@ class TabBar(UIBaseLib):
 
         :returns: Reference to the new tab button.
         """
-        return self.toolbar.find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
+        return self.toolbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'tabs-newtab-button'})
 
     @property
     def tabs(self):
@@ -211,6 +212,8 @@ class Tab(UIBaseLib):
         self._tab_element = tab_element
         self._handle = TabBar.get_handle_for_tab(self.marionette, tab_element)
 
+        self._security = Security(lambda: self.marionette)
+
         # Ensure the tab has been fully loaded
         Wait(self.marionette).until(
             lambda mn: mn.execute_script("""
@@ -226,7 +229,7 @@ class Tab(UIBaseLib):
 
         :returns: Reference to the tab close button.
         """
-        return self.tab_element.find_element('anon attribute', {'anonid': 'close-button'})
+        return self.tab_element.find_element(By.ANON_ATTRIBUTE, {'anonid': 'close-button'})
 
     @property
     def tab_element(self):
@@ -235,6 +238,30 @@ class Tab(UIBaseLib):
         :returns: Tab DOM element.
         """
         return self._tab_element
+
+    # Properties for backend values
+
+    @property
+    def location(self):
+        """Returns the current URL
+
+        :returns: Current URL
+        """
+        self.switch_to()
+
+        return self.marionette.execute_script("""
+          return arguments[0].linkedBrowser.currentURI.spec;
+        """, script_args=[self.tab_element])
+
+    @property
+    def certificate(self):
+        """The SSL certificate assiciated with the loaded web page.
+
+        :returns: Certificate details as JSON blob.
+        """
+        self.switch_to()
+
+        return self._security.get_certificate_for_page(self.tab_element)
 
     # Properties for helpers when working with tabs #
 
@@ -337,7 +364,7 @@ class MenuPanel(UIBaseLib):
             """
             if not self._buttons:
                 self._buttons = (self.find_element(By.ID, 'PanelUI-multiView')
-                                     .find_element('anon attribute',
+                                     .find_element(By.ANON_ATTRIBUTE,
                                                    {'anonid': 'viewContainer'})
                                      .find_elements(By.TAG_NAME,
                                                     'toolbarbutton'))

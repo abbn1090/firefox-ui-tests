@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import Wait, By
+from marionette_driver import Wait, By
 
 from ..api.keys import Keys
 from ..api.l10n import L10n
@@ -115,8 +115,8 @@ class LocationBar(UIBaseLib):
 
         :returns: Reference to the urlbar context menu.
         """
-        parent = self.urlbar.find_element('anon attribute', {'anonid': 'textbox-input-box'})
-        return parent.find_element('anon attribute', {'anonid': 'input-box-contextmenu'})
+        parent = self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'textbox-input-box'})
+        return parent.find_element(By.ANON_ATTRIBUTE, {'anonid': 'input-box-contextmenu'})
 
     @property
     def favicon(self):
@@ -162,7 +162,7 @@ class LocationBar(UIBaseLib):
 
         :returns: Reference to the history drop marker.
         """
-        return self.urlbar.find_element('anon attribute', {'anonid': 'historydropmarker'})
+        return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'historydropmarker'})
 
     @use_class_as_property('ui.toolbars.IdentityPopup')
     def identity_popup(self):
@@ -238,7 +238,7 @@ class LocationBar(UIBaseLib):
 
         :returns: Reference to the urlbar input.
         """
-        return self.urlbar.find_element('anon attribute', {'anonid': 'input'})
+        return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'input'})
 
     @property
     def value(self):
@@ -348,7 +348,7 @@ class AutocompleteResults(UIBaseLib):
         """
         :returns: The autocomplete result container node.
         """
-        return self.popup.find_element('anon attribute',
+        return self.popup.find_element(By.ANON_ATTRIBUTE,
                                        {'anonid': 'richlistbox'})
 
     @property

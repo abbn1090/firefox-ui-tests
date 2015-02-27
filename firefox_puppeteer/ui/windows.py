@@ -4,9 +4,9 @@
 
 from time import sleep
 
-from marionette import By, Wait
-from marionette.errors import NoSuchWindowException
-from marionette.keys import Keys
+from marionette_driver import By, Wait
+from marionette_driver.errors import NoSuchWindowException
+from marionette_driver.keys import Keys
 
 import firefox_puppeteer.errors as errors
 
@@ -44,7 +44,7 @@ class Windows(BaseLib):
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
               Cu.import("resource://gre/modules/Services.jsm");
-              var win = Services.wm.getMostRecentWindow("");
+              var win = Services.focus.activeWindow;
               return win.QueryInterface(Ci.nsIInterfaceRequestor)
                         .getInterface(Ci.nsIDOMWindowUtils)
                         .outerWindowID.toString();
@@ -282,7 +282,7 @@ class BaseWindow(BaseLib):
 
         :raises MarionetteException: When property id is not found.
         """
-        return self._l10n.get_entity(self.dtds, property_id)
+        return self._l10n.get_property(self.properties, property_id)
 
     def open_window(self, callback=None, expected_window_class=None):
         """Opens a new top-level chrome window.
@@ -393,6 +393,7 @@ class BrowserWindow(BaseWindow):
         'chrome://branding/locale/brand.dtd',
         'chrome://browser/locale/aboutPrivateBrowsing.dtd',
         'chrome://browser/locale/browser.dtd',
+        'chrome://browser/locale/netError.dtd',
     ]
 
     properties = [
