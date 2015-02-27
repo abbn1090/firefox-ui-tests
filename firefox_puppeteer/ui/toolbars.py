@@ -80,6 +80,7 @@ class LocationBar(UIBaseLib):
         # TODO: A "utility" module that sets up the client directly would be
         # useful here.
         self._autocomplete_results = None
+        self._identity_popup = None
         
 		
         self.l10n = L10n(self.get_marionette)
@@ -164,13 +165,21 @@ class LocationBar(UIBaseLib):
         """
         return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'historydropmarker'})
 
-    @use_class_as_property('ui.toolbars.IdentityPopup')
+    @property
     def identity_popup(self):
         """Provides utility members for accessing and manipulating the
         locationbar.
 
         See the :class:`IdentityPopup` reference.
         """
+        if not self._identity_popup:
+
+
+        
+        	from .toolbars import IdentityPopup
+        	self._identity_popup = IdentityPopup(lambda: self.marionette, self.window)
+
+        return self._identity_popup
 
     def load_url(self, url):
         """Load the specified url in the location bar by synthesized
