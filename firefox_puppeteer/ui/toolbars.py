@@ -6,13 +6,21 @@ from marionette import Wait, By
 
 from ..api.keys import Keys
 from ..api.l10n import L10n
-from ..base import BaseLib
+from ..base import UIBaseLib
 from ..decorators import use_class_as_property
 
 
-class NavBar(BaseLib):
+class NavBar(UIBaseLib):
     """Provides access to the DOM elements contained in the
     navigation bar as well as the location bar."""
+    def __init__(self, marionette_getter, window):
+        UIBaseLib.__init__(self, marionette_getter, window)
+        # TODO: A "utility" module that sets up the client directly would be
+        # useful here.
+        self._locationbar = None
+
+        self.l10n = L10n(self.get_marionette)
+        self.keys = Keys(self.get_marionette)
 
     @property
     def back_button(self):
@@ -38,13 +46,21 @@ class NavBar(BaseLib):
         """
         return self.marionette.find_element(By.ID, 'home-button')
 
-    @use_class_as_property('ui.toolbars.LocationBar')
+    @property
     def locationbar(self):
         """Provides access to the DOM elements contained in the
         locationbar.
 
         See the :class:`LocationBar` reference.
         """
+        if not self._locationbar:
+
+
+        
+        	from .toolbars import LocationBar
+        	self._locationbar = LocationBar(lambda: self.marionette, self.window)
+
+        return self._locationbar
 
     @property
     def menu_button(self):
@@ -55,26 +71,31 @@ class NavBar(BaseLib):
         return self.marionette.find_element(By.ID, 'PanelUI-menu-button')
 
 
-class LocationBar(BaseLib):
+class LocationBar(UIBaseLib):
     """Provides access to and methods for the DOM elements contained in the
     locationbar (the text area of the ui that typically displays the current url)."""
 
-    dtds = ["chrome://branding/locale/brand.dtd",
-            "chrome://browser/locale/browser.dtd"]
-
-    def __init__(self, *args, **kwargs):
-        BaseLib.__init__(self, *args, **kwargs)
+    def __init__(self, marionette_getter, window):
+        UIBaseLib.__init__(self, marionette_getter, window)
         # TODO: A "utility" module that sets up the client directly would be
         # useful here.
+        self._autocomplete_results = None
+        
+		
         self.l10n = L10n(self.get_marionette)
         self.keys = Keys(self.get_marionette)
 
-    @use_class_as_property('ui.toolbars.AutocompleteResults')
+    @property
     def autocomplete_results(self):
         """Provides access to and methods for the location bar
         autocomplete results.
 
         See the :class:`AutocompleteResults` reference."""
+        if not self._autocomplete_results:
+        	from .toolbars import AutocompleteResults
+        	self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self.window)
+        	
+        return self._autocomplete_results
 
     def clear(self):
         """Clears the contents of the url bar (via the DELETE shortcut)."""
@@ -114,9 +135,8 @@ class LocationBar(BaseLib):
         if evt == 'click':
             self.urlbar.click()
         elif evt == 'shortcut':
-            cmd_key = self.l10n.get_entity(LocationBar.dtds, 'openCmd.commandkey')
-            (self.marionette.find_element(By.ID, 'main-window')
-                            .send_keys(self.keys.ACCEL, cmd_key))
+            cmd_key = self.window.get_entity('openCmd.commandkey')
+            self.window.send_shortcut(cmd_key,accel=True)
         else:
             raise ValueError("An unknown event type was passed: %s" % evt)
 
@@ -191,8 +211,8 @@ class LocationBar(BaseLib):
         if trigger == 'button':
             self.reload_button.click()
         elif trigger == 'shortcut':
-            cmd_key = self.l10n.get_entity(LocationBar.dtds, 'reloadCmd.commandkey')
-            self.urlbar.send_keys(cmd_key)
+            cmd_key = self.window.get_entity('reloadCmd.commandkey')
+            self.window.send_shortcut(cmd_key)
         elif trigger == 'shortcut2':
             self.urlbar.send_keys(self.keys.F5)
 
@@ -229,11 +249,11 @@ class LocationBar(BaseLib):
         return self.urlbar.get_attribute('value')
 
 
-class AutocompleteResults(BaseLib):
+class AutocompleteResults(UIBaseLib):
     """Wraps DOM elements and methods for interacting with autocomplete results."""
 
-    def __init__(self, *args, **kwargs):
-        BaseLib.__init__(self, *args, **kwargs)
+    def __init__(self, marionette_getter, window):
+        UIBaseLib.__init__(self, marionette_getter, window)
         # TODO: A "utility" module that sets up the client directly would be
         # useful here.
         self.l10n = L10n(self.get_marionette)
@@ -340,8 +360,16 @@ class AutocompleteResults(BaseLib):
         return self.results.get_attribute('selectedIndex')
 
 
-class IdentityPopup(BaseLib):
+class IdentityPopup(UIBaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
+    def __init__(self, marionette_getter, window):
+        UIBaseLib.__init__(self, marionette_getter, window)
+        # TODO: A "utility" module that sets up the client directly would be
+        # useful here.
+     
+
+        self.l10n = L10n(self.get_marionette)
+        self.keys = Keys(self.get_marionette)
 
     @property
     def box(self):

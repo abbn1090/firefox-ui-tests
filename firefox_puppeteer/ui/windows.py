@@ -406,6 +406,7 @@ class BrowserWindow(BaseWindow):
         BaseWindow.__init__(self, *args, **kwargs)
 
         self._tabbar = None
+        self._navbar = None
 
     @property
     def is_private(self):
@@ -420,13 +421,20 @@ class BrowserWindow(BaseWindow):
                 return PrivateBrowsingUtils.isWindowPrivate(chromeWindow);
             """, script_args=[self.window_element])
 
-    @use_class_as_property('ui.toolbars.NavBar')
+    @property
     def navbar(self):
         """Provides access to the navigation bar. This is the toolbar containing
         the back, forward and home buttons. It also contains the location bar.
 
         See the :class:`~ui.toolbars.NavBar` reference.
         """
+        self.switch_to()
+
+        if not self._navbar:
+        	from .toolbars import NavBar
+        	self._navbar = NavBar(lambda: self.marionette, self)
+
+        return self._navbar
 
     @property
     def tabbar(self):
