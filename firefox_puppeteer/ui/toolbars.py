@@ -15,12 +15,10 @@ class NavBar(UIBaseLib):
     navigation bar as well as the location bar."""
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
+        
+        from .toolbars import LocationBar
+        
         self._locationbar = None
-
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
 
     @property
     def back_button(self):
@@ -54,11 +52,7 @@ class NavBar(UIBaseLib):
         See the :class:`LocationBar` reference.
         """
         if not self._locationbar:
-
-
-        
-        	from .toolbars import LocationBar
-        	self._locationbar = LocationBar(lambda: self.marionette, self.window)
+            self._locationbar = LocationBar(lambda: self.marionette, self.window)
 
         return self._locationbar
 
@@ -77,14 +71,9 @@ class LocationBar(UIBaseLib):
 
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
+        
         self._autocomplete_results = None
         self._identity_popup = None
-        
-		
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
 
     @property
     def autocomplete_results(self):
@@ -173,11 +162,8 @@ class LocationBar(UIBaseLib):
         See the :class:`IdentityPopup` reference.
         """
         if not self._identity_popup:
-
-
-        
-        	from .toolbars import IdentityPopup
-        	self._identity_popup = IdentityPopup(lambda: self.marionette, self.window)
+            from .toolbars import IdentityPopup
+            self._identity_popup = IdentityPopup(lambda: self.marionette, self.window)
 
         return self._identity_popup
 
@@ -223,7 +209,7 @@ class LocationBar(UIBaseLib):
             cmd_key = self.window.get_entity('reloadCmd.commandkey')
             self.window.send_shortcut(cmd_key)
         elif trigger == 'shortcut2':
-            self.urlbar.send_keys(self.keys.F5)
+            self.urlbar.send_keys(Keys.F5)
 
     @property
     def stop_button(self):
@@ -263,10 +249,6 @@ class AutocompleteResults(UIBaseLib):
 
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
 
     def close(self, force=False):
         """Closes the urlbar autocomplete popup.
@@ -373,12 +355,6 @@ class IdentityPopup(UIBaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
-     
-
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
 
     @property
     def box(self):
