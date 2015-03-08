@@ -15,9 +15,7 @@ class NavBar(UIBaseLib):
     navigation bar as well as the location bar."""
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        
-        from .toolbars import LocationBar
-        
+
         self._locationbar = None
 
     @property
@@ -52,6 +50,7 @@ class NavBar(UIBaseLib):
         See the :class:`LocationBar` reference.
         """
         if not self._locationbar:
+            from .toolbars import LocationBar
             self._locationbar = LocationBar(lambda: self.marionette, self.window)
 
         return self._locationbar
@@ -71,7 +70,7 @@ class LocationBar(UIBaseLib):
 
     def __init__(self, marionette_getter, window):
         UIBaseLib.__init__(self, marionette_getter, window)
-        
+
         self._autocomplete_results = None
         self._identity_popup = None
 
@@ -82,9 +81,9 @@ class LocationBar(UIBaseLib):
 
         See the :class:`AutocompleteResults` reference."""
         if not self._autocomplete_results:
-        	from .toolbars import AutocompleteResults
-        	self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self.window)
-        	
+            from .toolbars import AutocompleteResults
+            self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self.window)
+
         return self._autocomplete_results
 
     def clear(self):
@@ -126,7 +125,7 @@ class LocationBar(UIBaseLib):
             self.urlbar.click()
         elif evt == 'shortcut':
             cmd_key = self.window.get_entity('openCmd.commandkey')
-            self.window.send_shortcut(cmd_key,accel=True)
+            self.window.send_shortcut(cmd_key, accel=True)
         else:
             raise ValueError("An unknown event type was passed: %s" % evt)
 
@@ -209,7 +208,7 @@ class LocationBar(UIBaseLib):
             cmd_key = self.window.get_entity('reloadCmd.commandkey')
             self.window.send_shortcut(cmd_key)
         elif trigger == 'shortcut2':
-            self.urlbar.send_keys(Keys.F5)
+            self.window.send_shortcut(Keys.F5)
 
     @property
     def stop_button(self):
@@ -246,9 +245,6 @@ class LocationBar(UIBaseLib):
 
 class AutocompleteResults(UIBaseLib):
     """Wraps DOM elements and methods for interacting with autocomplete results."""
-
-    def __init__(self, marionette_getter, window):
-        UIBaseLib.__init__(self, marionette_getter, window)
 
     def close(self, force=False):
         """Closes the urlbar autocomplete popup.
@@ -353,8 +349,6 @@ class AutocompleteResults(UIBaseLib):
 
 class IdentityPopup(UIBaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
-    def __init__(self, marionette_getter, window):
-        UIBaseLib.__init__(self, marionette_getter, window)
 
     @property
     def box(self):

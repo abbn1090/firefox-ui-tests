@@ -432,8 +432,8 @@ class BrowserWindow(BaseWindow):
         self.switch_to()
 
         if not self._navbar:
-        	from .toolbars import NavBar
-        	self._navbar = NavBar(lambda: self.marionette, self)
+            from .toolbars import NavBar
+            self._navbar = NavBar(lambda: self.marionette, self)
 
         return self._navbar
 
