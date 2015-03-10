@@ -33,7 +33,9 @@ The following libraries are currently implemented. More will be added in the
 future. Each library is available from an instance of the FirefoxTestCase class.
 
 .. toctree::
+   ui/about/window
    ui/menu
+   ui/pageinfo/window
    ui/tabbar
    ui/toolbars
    ui/windows
@@ -43,6 +45,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    api/places
    api/prefs
    api/security
+   api/software_update
    api/utils
 
 
