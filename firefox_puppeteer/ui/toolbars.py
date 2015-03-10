@@ -13,8 +13,8 @@ from ..decorators import use_class_as_property
 class NavBar(UIBaseLib):
     """Provides access to the DOM elements contained in the
     navigation bar as well as the location bar."""
-    def __init__(self, marionette_getter, window):
-        UIBaseLib.__init__(self, marionette_getter, window)
+    def __init__(self, marionette_getter, window, element):
+        UIBaseLib.__init__(self, marionette_getter, window, element)
 
         self._locationbar = None
 
@@ -51,7 +51,7 @@ class NavBar(UIBaseLib):
         """
         if not self._locationbar:
             from .toolbars import LocationBar
-            self._locationbar = LocationBar(lambda: self.marionette, self.window)
+            self._locationbar = LocationBar(lambda: self.marionette, self.window, self.element)
 
         return self._locationbar
 
@@ -68,8 +68,8 @@ class LocationBar(UIBaseLib):
     """Provides access to and methods for the DOM elements contained in the
     locationbar (the text area of the ui that typically displays the current url)."""
 
-    def __init__(self, marionette_getter, window):
-        UIBaseLib.__init__(self, marionette_getter, window)
+    def __init__(self, marionette_getter, window, element):
+        UIBaseLib.__init__(self, marionette_getter, window, element)
 
         self._autocomplete_results = None
         self._identity_popup = None
@@ -82,7 +82,7 @@ class LocationBar(UIBaseLib):
         See the :class:`AutocompleteResults` reference."""
         if not self._autocomplete_results:
             from .toolbars import AutocompleteResults
-            self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self.window)
+            self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self.window, self.element)
 
         return self._autocomplete_results
 
@@ -162,7 +162,7 @@ class LocationBar(UIBaseLib):
         """
         if not self._identity_popup:
             from .toolbars import IdentityPopup
-            self._identity_popup = IdentityPopup(lambda: self.marionette, self.window)
+            self._identity_popup = IdentityPopup(lambda: self.marionette, self.window, self.element)
 
         return self._identity_popup
 
