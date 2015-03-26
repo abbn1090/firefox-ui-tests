@@ -461,7 +461,8 @@ class BrowserWindow(BaseWindow):
 
         if not self._navbar:
             from .toolbars import NavBar
-            self._navbar = NavBar(lambda: self.marionette, self, self.window_element)
+            navbarelement = self.marionette.find_element(By.ID, 'nav-bar')
+            self._navbar = NavBar(lambda: self.marionette, self, navbarelement)
 
         return self._navbar
 

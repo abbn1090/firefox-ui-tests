@@ -51,7 +51,8 @@ class NavBar(UIBaseLib):
         """
         if not self._locationbar:
             from .toolbars import LocationBar
-            self._locationbar = LocationBar(lambda: self.marionette, self.window, self.element)
+            urlbarelement = self.marionette.find_element(By.ID, 'urlbar')
+            self._locationbar = LocationBar(lambda: self.marionette, self.window, urlbarelement)
 
         return self._locationbar
 
@@ -82,8 +83,10 @@ class LocationBar(UIBaseLib):
         See the :class:`AutocompleteResults` reference."""
         if not self._autocomplete_results:
             from .toolbars import AutocompleteResults
+            popupautocompleteelement = self.marionette.find_element(By.ID,
+                                                                    'PopupAutoCompleteRichResult')
             self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self
-                                                             .window, self.element)
+                                                             .window, popupautocompleteelement)
 
         return self._autocomplete_results
 
@@ -163,8 +166,9 @@ class LocationBar(UIBaseLib):
         """
         if not self._identity_popup:
             from .toolbars import IdentityPopup
+            identitypopupelement = self.marionette.find_element(By.ID, 'identity-popup')
             self._identity_popup = IdentityPopup(lambda: self.marionette, self
-                                                 .window, self.element)
+                                                 .window, identitypopupelement)
 
         return self._identity_popup
 
