@@ -83,10 +83,10 @@ class LocationBar(UIBaseLib):
         See the :class:`AutocompleteResults` reference."""
         if not self._autocomplete_results:
             from .toolbars import AutocompleteResults
-            popupautocompleteelement = self.marionette.find_element(By.ID,
-                                                                    'PopupAutoCompleteRichResult')
+            autocompleteelement = self.marionette.find_element(By.ID,
+                                                               'PopupAutoCompleteRichResult')
             self._autocomplete_results = AutocompleteResults(lambda: self.marionette, self
-                                                             .window, popupautocompleteelement)
+                                                             .window, autocompleteelement)
 
         return self._autocomplete_results
 
