@@ -98,6 +98,8 @@ class Windows(BaseLib):
             # Retrieve window type to determine the type of chrome window
             if handle != self.marionette.current_chrome_window_handle:
                 self.switch_to(handle)
+
+            Wait(self.marionette).until(lambda mn: mn.get_window_type() is not None)
             window_type = self.marionette.get_window_type()
         finally:
             # Ensure to switch back to the original window
@@ -112,6 +114,9 @@ class Windows(BaseLib):
         elif window_type == 'Browser:page-info':
             from .pageinfo.window import PageInfoWindow
             window = PageInfoWindow(lambda: self.marionette, handle)
+        elif window_type == 'Update:Wizard':
+            from update_wizard import UpdateWizardDialog
+            window = UpdateWizardDialog(lambda: self.marionette, handle)
         else:
             raise errors.UnknownWindowError('Unknown window type "%s" for handle: "%s"' %
                                             (window_type, handle))
@@ -592,6 +597,8 @@ class BrowserWindow(BaseWindow):
                 menu = win.marionette.find_element(By.ID, 'menu_pageInfo')
                 menu.click()
             elif trigger == 'shortcut':
+                if win.marionette.session_capabilities['platform'] == 'WINNT':
+                    raise ValueError('Page info shortcut not available on Windows.')
                 win.send_shortcut(win.get_entity('pageInfoCmd.commandkey'),
                                   accel=True)
             elif trigger == 'context_menu':

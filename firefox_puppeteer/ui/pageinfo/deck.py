@@ -63,7 +63,9 @@ class Deck(UIBaseLib):
           let panels = [];
 
           for (let index = 0; index < deck.children.length; index++) {
-            panels.push(deck.children[index].id);
+            if (deck.children[index].id) {
+              panels.push(deck.children[index].id);
+            }
           }
 
           return panels;
@@ -124,6 +126,12 @@ class Panel(UIBaseLib):
 
     def __eq__(self, other):
         return self.element.get_attribute('id') == other.element.get_attribute('id')
+
+    def __ne__(self, other):
+        return self.element.get_attribute('id') != other.element.get_attribute('id')
+
+    def __str__(self):
+        return self.element.get_attribute('id')
 
     @property
     def tab(self):

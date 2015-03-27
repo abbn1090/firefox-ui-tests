@@ -22,7 +22,8 @@ class Deck(UIBaseLib):
                    'checkingForUpdates': CheckingForUpdatesPanel,
                    'downloadAndInstall': DownloadAndInstallPanel,
                    'downloadFailed': DownloadFailedPanel,
-                   'downloading': DownloadingPanel
+                   'downloading': DownloadingPanel,
+                   'noUpdatesFound': NoUpdatesFoundPanel,
                    }
 
         panel = self.element.find_element(By.ID, panel_id)
@@ -87,6 +88,14 @@ class Deck(UIBaseLib):
         return self._create_panel_for_id('downloading')
 
     @property
+    def no_updates_found(self):
+        """The :class:`NoUpdatesFoundPanel` instance for the no updates found panel.
+
+        :returns: :class:`NoUpdatesFoundPanel` instance.
+        """
+        return self._create_panel_for_id('noUpdatesFound')
+
+    @property
     def panels(self):
         """List of all the :class:`Panel` instances of the current deck.
 
@@ -97,7 +106,9 @@ class Deck(UIBaseLib):
           let panels = [];
 
           for (let index = 0; index < deck.children.length; index++) {
-            panels.push(deck.children[index].id);
+            if (deck.children[index].id) {
+              panels.push(deck.children[index].id);
+            }
           }
 
           return panels;
@@ -126,6 +137,12 @@ class Panel(UIBaseLib):
 
     def __eq__(self, other):
         return self.element.get_attribute('id') == other.element.get_attribute('id')
+
+    def __ne__(self, other):
+        return self.element.get_attribute('id') != other.element.get_attribute('id')
+
+    def __str__(self):
+        return self.element.get_attribute('id')
 
 
 class ApplyBillboardPanel(Panel):
@@ -181,4 +198,8 @@ class DownloadFailedPanel(Panel):
 
 
 class DownloadingPanel(Panel):
+    pass
+
+
+class NoUpdatesFoundPanel(Panel):
     pass
